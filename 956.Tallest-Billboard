@@ -1,0 +1,54 @@
+class Solution:
+    def helper(self,indx,left,right,rods,ans,res):
+        if indx == len(rods):
+            if sum(left[::]) != sum(right[::]):
+                return
+            else:
+                ans = max(ans,sum(left[::]))
+                res.append(ans)
+                return 
+        #not picked
+        self.helper(indx+1,left,right,rods,ans,res)
+        # picked in left
+        left.append(rods[indx])
+        self.helper(indx+1,left,right,rods,ans,res)
+        left.pop()
+        # picked in right
+        right.append(rods[indx])
+        self.helper(indx+1,left,right,rods,ans,res)    
+        right.pop()
+    
+    def tallestBillboard(self, rods: List[int]) -> int:
+        n = len(rods)
+        left = []
+        right = []
+        ans = float('-inf')
+        res = []
+        self.helper(0,left,right,rods,ans,res)
+        return max(res)
+
+
+class Solution {
+public:
+    int helper(int indx,int l,vector<int>& rods,vector<vector<int>> &dp){
+        if (indx == rods.size()){
+            if (l == 0){
+                return 0;
+            }
+            else{
+                return INT_MIN;
+            }
+        }
+        if(dp[l+5000][indx] != -1) return dp[l+5000][indx];
+        int left = rods[indx] + helper(indx+1,l+rods[indx],rods,dp);
+        int right = helper(indx+1,l-rods[indx],rods,dp);
+        int notpick = helper(indx+1,l,rods,dp);
+        return dp[l+5000][indx] = max(notpick,max(left,right));
+        //return max(notpick,max(left,right));
+    }   
+    
+    int tallestBillboard(vector<int>& rods) {
+        vector<vector<int>>dp(10001,(vector<int>(21,-1)));
+        return helper(0,0,rods,dp);
+    }
+};
