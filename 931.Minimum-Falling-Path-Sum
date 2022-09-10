@@ -1,0 +1,46 @@
+class Solution:
+    def minFallingPathSum(self, matrix: List[List[int]]) -> int:
+        @lru_cache(None)
+        def helper(r,c):
+            if c < 0 or c >= len(matrix[0]):
+                return float('inf')
+            if r == len(matrix)-1:
+                return matrix[len(matrix)-1][c]
+            q = matrix[r][c] + helper(r+1,c+1)
+            p = matrix[r][c] + helper(r+1,c)
+            l = matrix[r][c] + helper(r+1,c-1)
+            return min(q,p,l)
+        n = len(matrix)
+        ans = float('inf')
+        for i in range(len(matrix[0])):
+            ans = min(ans,helper(0,i))
+        return ans
+
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& A) 
+    {
+        auto dp = A;        // dp[i][j]: minimum sum of a falling path through A to (i,j)
+        int m = A.size();
+        int n = A[0].size();
+        
+        for (int j=0; j<n; j++)
+            dp[0][j] = A[0][j];
+        
+        for (int i=1; i<m; i++)
+            for (int j=0; j<n; j++)
+            {
+                dp[i][j] = INT_MAX;
+                for (int k = j-1; k<=j+1; k++)
+                {
+                    if (k<0 || k>=n) continue;
+                    dp[i][j] = min(dp[i][j],  dp[i-1][k]+A[i][j]);                    
+                }                
+            }
+        int ret = INT_MAX;
+        for (int j=0; j<n; j++)
+            ret = min(ret, dp[m-1][j]);
+        return ret;
+        
+    }
+};
