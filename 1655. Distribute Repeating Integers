@@ -1,0 +1,17 @@
+class Solution:
+    def canDistribute(self, nums: List[int], quantity: List[int]) -> bool:
+        res = Counter(nums)
+        m = len(quantity)
+        res = sorted(res.values())[-m:]
+        quantity.sort(reverse=True)
+        def helper(indx):
+            if indx == len(quantity):
+                return True
+            for k,v in enumerate(res):
+                if v >= quantity[indx]:
+                    res[k] = v - quantity[indx] 
+                    if helper(indx+1):
+                        return True
+                    res[k] = res[k] + quantity[indx]
+            return False
+        return helper(0) 
